@@ -286,11 +286,22 @@ func in(target string, str_array []string) bool {
 	return false
 }
 
-// 判断访问地址是否在黑名单内
+// IsBlackIp 判断访问地址是否在黑名单内
 func IsBlackIp(ipPort, vkey string, blackIpList []string) bool {
 	ip := GetIpByAddr(ipPort)
 	if in(ip, blackIpList) {
 		logs.Error("IP地址[" + ip + "]在隧道[" + vkey + "]黑名单列表内")
+		return true
+	}
+
+	return false
+}
+
+// IsWhiteIp 判断访问地址是否在白名单内
+func IsWhiteIp(ipPort, vkey string, blackIpList []string) bool {
+	ip := GetIpByAddr(ipPort)
+	if in(ip, blackIpList) {
+		logs.Info("IP地址[" + ip + "]在隧道[" + vkey + "]白名单列表内")
 		return true
 	}
 

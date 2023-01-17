@@ -47,6 +47,11 @@ func (s *UdpModeServer) Start() error {
 			continue
 		}
 
+		// 判断访问地址是否在白名单内
+		if !common.IsWhiteIp(addr.String(), s.task.Client.VerifyKey, s.task.Client.WhiteIpList) {
+			break
+		}
+
 		// 判断访问地址是否在黑名单内
 		if common.IsBlackIp(addr.String(), s.task.Client.VerifyKey, s.task.Client.BlackIpList) {
 			break

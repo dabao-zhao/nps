@@ -166,6 +166,12 @@ reset:
 		return
 	}
 
+	// 判断访问地址是否在白名单内
+	if !common.IsWhiteIp(c.RemoteAddr().String(), host.Client.VerifyKey, host.Client.WhiteIpList) {
+		c.Close()
+		return
+	}
+
 	// 判断访问地址是否在黑名单内
 	if common.IsBlackIp(c.RemoteAddr().String(), host.Client.VerifyKey, host.Client.BlackIpList) {
 		c.Close()

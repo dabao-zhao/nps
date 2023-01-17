@@ -97,6 +97,12 @@ func in(target string, str_array []string) bool {
 func (s *BaseServer) DealClient(c *conn.Conn, client *file.Client, addr string,
 	rb []byte, tp string, f func(), flow *file.Flow, localProxy bool, task *file.Tunnel) error {
 
+	// 判断访问地址是否在白名单内
+	if !common.IsWhiteIp(c.RemoteAddr().String(), client.VerifyKey, client.WhiteIpList) {
+		c.Close()
+		return nil
+	}
+
 	// 判断访问地址是否在黑名单内
 	if common.IsBlackIp(c.RemoteAddr().String(), client.VerifyKey, client.BlackIpList) {
 		c.Close()

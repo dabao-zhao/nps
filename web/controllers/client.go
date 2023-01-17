@@ -68,6 +68,7 @@ func (s *ClientController) Add() {
 				FlowLimit:  int64(s.GetIntNoErr("flow_limit")),
 			},
 			BlackIpList: RemoveRepeatedElement(strings.Split(s.getEscapeString("blackiplist"), "\r\n")),
+			WhiteIpList: RemoveRepeatedElement(strings.Split(s.getEscapeString("whiteiplist"), "\r\n")),
 		}
 		if err := file.GetDb().NewClient(t); err != nil {
 			s.AjaxErr(err.Error())
@@ -100,6 +101,7 @@ func (s *ClientController) Edit() {
 		} else {
 			s.Data["c"] = c
 			s.Data["BlackIpList"] = strings.Join(c.BlackIpList, "\r\n")
+			s.Data["WhiteIpList"] = strings.Join(c.WhiteIpList, "\r\n")
 		}
 		s.SetInfo("edit client")
 		s.display()
@@ -149,6 +151,7 @@ func (s *ClientController) Edit() {
 			}
 
 			c.BlackIpList = RemoveRepeatedElement(strings.Split(s.getEscapeString("blackiplist"), "\r\n"))
+			c.WhiteIpList = RemoveRepeatedElement(strings.Split(s.getEscapeString("whiteiplist"), "\r\n"))
 			file.GetDb().JsonDb.StoreClientsToJsonFile()
 		}
 		s.AjaxOk("save success")
