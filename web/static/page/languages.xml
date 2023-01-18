@@ -717,6 +717,26 @@
 		<en-US>IP Black List</en-US>
 	</lang>
 
+	<lang id="word-whiteiplist">
+		<zh-CN>IP白名单（防暴力破解）</zh-CN>
+		<en-US>IP White List</en-US>
+	</lang>
+
+	<lang id="info-suchaswhiteiplist">
+		<zh-CN>例如&#10;10.1.50.203&#10;10.1.50.202</zh-CN>
+		<en-US>such as&#10;10.1.50.203&#10;10.1.50.202</en-US>
+	</lang>
+
+
+	<lang id="info-descwhiteiplist">
+		<zh-CN>一行一个，IPV4,不支持范围匹配</zh-CN>
+		<en-US>IPV4</en-US>
+	</lang>
+
+	<lang id="word-whiteip">
+		<zh-CN>IP白名单</zh-CN>
+		<en-US>IP White List</en-US>
+	</lang>
 
 	<confirm>
 		<lang id="delete">
