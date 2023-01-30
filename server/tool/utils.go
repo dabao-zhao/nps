@@ -67,7 +67,7 @@ func GenerateServerPort(m string) int {
 
 func getSeverStatus() {
 	for {
-		if len(ServerStatus) < 10 {
+		if len(ServerStatus) < 20 {
 			time.Sleep(time.Second)
 		} else {
 			time.Sleep(time.Minute)
