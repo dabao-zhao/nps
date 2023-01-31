@@ -304,7 +304,6 @@ func IsWhiteIp(ipPort, vkey string, whiteIpList []string) bool {
 	}
 	ip := GetIpByAddr(ipPort)
 	if in(ip, whiteIpList) {
-		logs.Info("IP地址[" + ip + "]在隧道[" + vkey + "]白名单列表内")
 		return true
 	} else {
 		logs.Info("IP地址[" + ip + "]未在隧道[" + vkey + "]白名单列表内")
