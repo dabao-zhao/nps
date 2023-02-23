@@ -5,7 +5,6 @@ import (
 	"errors"
 	"math"
 	"os"
-	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -449,19 +448,50 @@ func GetDashboardData() map[string]interface{} {
 		data[v.Protocol] = v.Stats["CurrEstab"]
 	}
 	//chart
-	var fg float64
 	serverStatusLen := len(tool.ServerStatus)
-	if serverStatusLen >= 20 {
-		fg = float64(serverStatusLen) / float64(20)
-		for i := 1; i <= 20; i++ {
-			index := int(math.Ceil(float64(i) * fg))
-			if index >= serverStatusLen {
-				data["sys"+strconv.Itoa(i)] = tool.ServerStatus[serverStatusLen-1]
-			} else {
-				data["sys"+strconv.Itoa(i)] = tool.ServerStatus[index]
-			}
+
+	var sysTimes []string
+	var load1 []float64
+	var load5 []float64
+	var load15 []float64
+	var cpu_ []float64
+	var virtualMem []float64
+	var swapMem []float64
+	var tcpConn []int64
+	var udpConn []int64
+	var bandwidthIn []uint64
+	var bandwidthOut []uint64
+	for i := 1; i <= 1440; i++ {
+		index := i
+		var sys map[string]interface{}
+		if index > (serverStatusLen - 1) {
+			continue
 		}
+		sys = tool.ServerStatus[index]
+		sysTimes = append(sysTimes, sys["time"].(string))
+		load1 = append(load1, sys["load1"].(float64))
+		load5 = append(load5, sys["load5"].(float64))
+		load15 = append(load15, sys["load15"].(float64))
+		cpu_ = append(cpu_, sys["cpu"].(float64))
+		virtualMem = append(virtualMem, sys["virtual_mem"].(float64))
+		swapMem = append(swapMem, sys["swap_mem"].(float64))
+		tcpConn = append(tcpConn, sys["tcp"].(int64))
+		udpConn = append(udpConn, sys["udp"].(int64))
+		bandwidthIn = append(bandwidthIn, sys["io_recv"].(uint64))
+		bandwidthOut = append(bandwidthOut, sys["io_send"].(uint64))
 	}
+	data["chart_sys_times"] = sysTimes
+	data["chart_sys_load1"] = load1
+	data["chart_sys_load5"] = load5
+	data["chart_sys_load15"] = load15
+	data["chart_sys_cpu"] = cpu_
+	data["chart_sys_virtual_mem"] = virtualMem
+	data["chart_sys_swap_mem"] = swapMem
+	data["chart_sys_tcp"] = tcpConn
+	data["chart_sys_udp"] = udpConn
+	data["chart_sys_io_in"] = bandwidthIn
+	data["chart_sys_io_out"] = bandwidthOut
+
 	return data
 }
 
