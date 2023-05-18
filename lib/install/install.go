@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/c4milo/unpackit"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -157,7 +158,7 @@ func downloadLatest(bin string) string {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	b, err := io.ReadAll(data.Body)
+	b, err := ioutil.ReadAll(data.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
