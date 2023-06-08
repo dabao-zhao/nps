@@ -1,9 +1,9 @@
 module ehang.io/nps
 
-go 1.15
+go 1.16
 
 require (
-	fyne.io/fyne/v2 v2.0.2
+	fyne.io/fyne/v2 v2.3.5
 	github.com/astaxie/beego v1.12.0
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8 // indirect
 	github.com/c4milo/unpackit v0.0.0-20170704181138-4ed373e9ef1c
@@ -25,9 +25,7 @@ require (
 	github.com/tjfoc/gmsm v1.4.0 // indirect
 	github.com/xtaci/kcp-go v5.4.20+incompatible
 	github.com/xtaci/lossyconn v0.0.0-20190602105132-8df528c0c9ae // indirect
-	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2 // indirect
-	golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4
-	golang.org/x/sys v0.0.0-20210403161142-5e06dd20ab57 // indirect
+	golang.org/x/net v0.0.0-20220722155237-a158d28d115b
 )
 
 replace github.com/astaxie/beego => github.com/exfly/beego v1.12.0-export-init

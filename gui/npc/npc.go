@@ -5,14 +5,16 @@ import (
 	"ehang.io/nps/lib/common"
 	"ehang.io/nps/lib/daemon"
 	"ehang.io/nps/lib/version"
+	_ "embed"
 	"fmt"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/driver/desktop"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
 	"github.com/astaxie/beego/logs"
-	"io/ioutil"
+	"io"
 	"os"
 	"path"
 	"runtime"
@@ -20,13 +22,39 @@ import (
 	"time"
 )
 
+//go:embed icon.png
+var icn []byte
+
 func main() {
 	daemon.InitDaemon("npc", common.GetRunPath(), common.GetTmpPath())
-	logs.SetLogger("store")
+	_ = logs.SetLogger("store")
+
 	application := app.New()
+	icon := fyne.NewStaticResource("icon", icn)
 	window := application.NewWindow("Npc " + version.VERSION)
 	window.SetContent(WidgetScreen())
+	window.SetIcon(icon)
 	window.Resize(fyne.NewSize(910, 350))
+
+	if desk, ok := application.(desktop.App); ok {
+		m := fyne.NewMenu("MyApp",
+			fyne.NewMenuItem("Show", func() {
+				window.Show()
+			}))
+		desk.SetSystemTrayMenu(m)
+		desk.SetSystemTrayIcon(icon)
+	}
+
+	window.SetCloseIntercept(func() {
+		window.Hide()
+	})
+
+	window.SetOnClosed(func() {
+		if cl != nil {
+			go cl.Close()
+			cl = nil
+		}
+	})
 
 	window.ShowAndRun()
 
@@ -42,7 +70,7 @@ var (
 )
 
 func WidgetScreen() fyne.CanvasObject {
-	return fyne.NewContainerWithLayout(layout.NewBorderLayout(nil, nil, nil, nil),
+	return container.New(layout.NewBorderLayout(nil, nil, nil, nil),
 		makeMainTab(),
 	)
 }
@@ -89,7 +117,6 @@ func makeMainTab() *fyne.Container {
 	}
 
 	return container.NewVBox(
-		widget.NewLabel("Npc "+version.VERSION),
 		serverPort,
 		vKey,
 		radio,
@@ -138,7 +165,7 @@ func onclick(s, v, c string) {
 
 func getDir() (dir string, err error) {
 	if runtime.GOOS != "android" {
-		dir, err = os.UserConfigDir()
+		dir, err = os.Getwd()
 		if err != nil {
 			return
 		}
@@ -157,11 +184,11 @@ func saveConfig(host, vkey, connType string) {
 	}
 	_ = os.Remove(path.Join(ph, "npc.conf"))
 	f, err := os.OpenFile(path.Join(ph, "npc.conf"), os.O_CREATE|os.O_WRONLY, 0644)
-	defer f.Close()
 	if err != nil {
 		logs.Error(err)
 		return
 	}
+	defer f.Close()
 	if _, err := f.Write([]byte(data)); err != nil {
 		_ = f.Close() // ignore error; Write error takes precedence
 		logs.Error(err)
@@ -176,12 +203,12 @@ func loadConfig() (host, vkey, connType string) {
 		return
 	}
 	f, err := os.OpenFile(path.Join(ph, "npc.conf"), os.O_RDONLY, 0644)
-	defer f.Close()
 	if err != nil {
 		logs.Error(err)
 		return
 	}
-	data, err := ioutil.ReadAll(f)
+	defer f.Close()
+	data, err := io.ReadAll(f)
 	if err != nil {
 		logs.Error(err)
 		return
